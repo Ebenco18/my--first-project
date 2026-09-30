@@ -1,28 +1,44 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Ebenco - My First Website</title>
-  <style>
-    body { font-family: Arial; text-align: center; background: #0a0a0a; color: white; padding: 50px; }
-    h1 { color: #00ff88; font-size: 50px; }
-    p { font-size: 20px; }
-    .box { background: #1a1a1a; padding: 30px; border-radius: 20px; margin-top: 30px; border: 2px solid #00ff88; }
-    a { color: #00ff88; text-decoration: none; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebenco | Web Developer</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+        body{background:#0a0e1a;color:#fff;line-height:1.6}
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 20% 30%, #1a2a5a 0%, #0a0e1a 60%)}
+        .card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px;max-width:500px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+        .profile-img{width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid #00d4ff;margin:0 auto 20px;display:block;box-shadow:0 0 30px rgba(0,212,255,0.4)}
+        h1{font-size:32px;margin-bottom:5px} 
+        h1 span{color:#00d4ff}
+        .tag{color:#00d4ff;font-weight:bold;letter-spacing:2px;margin-bottom:15px;font-size:14px}
+        .bio{color:#a0aec0;margin-bottom:25px;font-size:16px}
+        .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+        .btn{padding:12px 24px;border-radius:30px;text-decoration:none;font-weight:bold;transition:0.3s}
+        .btn-primary{background:#00d4ff;color:#000}
+        .btn-primary:hover{background:#fff;transform:translateY(-2px)}
+        .btn-outline{border:1px solid rgba(255,255,255,0.2);color:#fff}
+        .btn-outline:hover{background:rgba(255,255,255,0.1)}
+        .footer{margin-top:25px;font-size:13px;color:#5a6c8a}
+    </style>
 </head>
 <body>
-  <h1>Na Ebenco Be This 🔥</h1>
-  <p>Upcoming Web Developer | From Lagos to the World</p>
-  
-  <div class="box">
-    <h2>About Me</h2>
-    <p>My name is Ebenco. I just pushed my first code to GitHub today!</p>
-    <p>I dey learn how to build fine websites.</p>
-    <br>
-    <p>Check my GitHub: <a href="https://github.com/Ebenco18">github.com/Ebenco18</a></p>
-  </div>
-
-  <p style="margin-top:40px;">Built with ❤️ on 30th September 2026</p>
+    <div class="hero">
+        <div class="card">
+            <img src="profile.jpg" alt="Ebenco" class="profile-img" onerror="this.src='https://via.placeholder.com/140'">
+            <h1>NA <span>EBENCO</span> BE THIS</h1>
+            <div class="tag">WEB DEVELOPER • LAGOS TO THE WORLD</div>
+            <p class="bio">
+                My name is Ebenco. I just pushed my first code to GitHub! 
+                Building clean, fast websites. From Lagos 🇳🇬 to the world 🚀
+            </p>
+            <div class="btns">
+                <a href="https://github.com/ebenco18" class="btn btn-primary">View My GitHub</a>
+                <a href="mailto:ebenco18@gmail.com" class="btn btn-outline">Contact Me</a>
+            </div>
+            <div class="footer">© 2026 Ebenco • Built with ❤️ in Lagos</div>
+        </div>
+    </div>
 </body>
 </html>
