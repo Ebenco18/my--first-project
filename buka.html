@@ -1,17 +1,154 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold Buka - Order Online</title><style>body{font-family:Arial;background:#fff8e7;margin:0;padding:0}header{background:#8B4513;color:gold;padding:15px;text-align:center;position:sticky;top:0;z-index:10}.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:white;border:3px solid #8B4513;border-radius:12px;overflow:hidden;text-align:center}.card img{width:100%;height:110px;object-fit:cover}.card h4{margin:5px 0 0;font-size:14px}.price{color:#8B4513;font-weight:bold}.btn{width:90%;margin:5px;background:#8B4513;color:gold;border:none;padding:8px;border-radius:8px;font-weight:bold}#cartBtn{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;border:none;padding:15px 20px;border-radius:50px;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:20}#checkout{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:30}.box{background:white;width:90%;max-width:400px;border-radius:15px;padding:20px;border:4px solid #8B4513}input,textarea{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:2px solid #ccc;box-sizing:border-box}</style></head><body>
-<header><h2>🍛 MAMA GOLD BUKA</h2><div>Fresh food daily - Order now!</div></header>
-<div id="menu" class="menu">Loading...</div>
-<button id="cartBtn" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mama Gold Buka - Order Food Online</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#fff8e7}
+#tracker{background:#8B4513;color:gold;padding:10px;text-align:center;position:sticky;top:0;z-index:100;display:none}
+header{background:#8B4513;color:gold;padding:15px;text-align:center}
+header h1{font-size:24px}
+#menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:15px}
+.food{background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative}
+.food img{width:100%;height:120px;object-fit:cover}
+.food .info{padding:10px}
+.food h3{font-size:14px;color:#8B4513}
+.food p{font-size:12px;color:#666;margin:4px 0}
+.price{color:#25D366;font-weight:bold}
+.food button{width:100%;padding:8px;background:#8B4513;color:gold;border:none;border-radius:8px;font-weight:bold;margin-top:5px;cursor:pointer}
+.food button:disabled{background:#ccc}
+.soldout{position:absolute;top:5px;right:5px;background:red;color:white;padding:3px 8px;border-radius:10px;font-size:11px}
+#cartBtn{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;border:none;padding:14px 20px;border-radius:50px;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:50}
+#cartModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:200;padding:15px}
+#cartBox{background:white;width:100%;max-width:450px;border-radius:15px;max-height:90vh;overflow:auto}
+#cartBox .head{background:#8B4513;color:gold;padding:15px;text-align:center;border-radius:15px 15px 0 0}
+.cartItem{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee}
+input{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:2px solid #ddd}
+#orderBtn{width:100%;padding:14px;background:#25D366;color:white;border:none;border-radius:10px;font-weight:bold;font-size:16px}
+</style></head><body>
 
-<div id="checkout"><div class="box"><h3 style="text-align:center;color:#8B4513">Complete Your Order</h3><div id="cartList" style="max-height:150px;overflow:auto"></div><input id="cName" placeholder="Your Name"><input id="cPhone" placeholder="Phone Number 080..."><textarea id="cLoc" placeholder="Your Location / Full Address - e.g No 12 XYZ Street, Kano"></textarea><input id="cNote" placeholder="Extra note (optional)"><button onclick="placeOrder()" id="orderBtn" style="width:100%;padding:14px;background:#25D366;color:white;border:none;border-radius:10px;font-weight:bold;margin-top:10px">Place Order - Pay on Delivery</button><button onclick="closeCart()" style="width:100%;padding:10px;background:#ccc;border:none;border-radius:10px;margin-top:5px">Cancel</button><div id="msg" style="text-align:center;margin-top:8px"></div></div></div>
+<div id="tracker">
+  Last Order: <b><span id="trackId"></span></b> - <span id="trackStatus">Checking...</span>
+  <a id="rateLink" href="#" style="background:gold;color:#8B4513;padding:4px 10px;border-radius:10px;text-decoration:none;margin-left:10px;display:none">⭐ Rate Us</a>
+</div>
+
+<header><h1>🍛 MAMA GOLD BUKA</h1><p>Hot food, fast delivery in Lagos</p></header>
+
+<div id="menu">Loading menu...</div>
+
+<button id="cartBtn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>) - ₦<span id="cartTotal">0</span></button>
+
+<div id="cartModal"><div id="cartBox">
+<div class="head"><h3>Your Order</h3></div>
+<div id="cartItems" style="padding:10px"></div>
+<div style="padding:15px">
+<input id="custName" placeholder="Your Full Name">
+<input id="custPhone" placeholder="Phone (e.g 08012345678)">
+<input id="custLocation" placeholder="Delivery Location / Address">
+<div style="font-weight:bold;margin:10px 0">Total: ₦<span id="finalTotal">0</span></div>
+<button id="orderBtn" onclick="submitOrder()">Place Order - Pay on Delivery</button>
+<button onclick="closeCart()" style="width:100%;padding:10px;margin-top:8px;background:#ccc;border:none;border-radius:8px">Continue Shopping</button>
+</div>
+</div></div>
 
 <script>
 const API="https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
-let cart=[];
-async function load(){let r=await fetch(API);let data=await r.json();let h="";data.forEach(f=>{if(f.status=="soldout") return;h+=`<div class="card"><img src="${f.image}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'"><h4>${f.name}</h4><div style="font-size:11px">${f.desc}</div><div class="price">₦${f.price}</div><button class="btn" onclick="addCart('${f.name.replace(/'/g,"\\'")}',${f.price})">Add to Cart</button></div>`});document.getElementById('menu').innerHTML=h||"No food available today";}
-function addCart(name,price){let found=cart.find(c=>c.name==name);if(found){found.qty++}else{cart.push({name,price,qty:1})}document.getElementById('count').innerText=cart.reduce((s,c)=>s+c.qty,0);document.getElementById('cartBtn').style.background="#8B4513";setTimeout(()=>document.getElementById('cartBtn').style.background="#25D366",300);}
-function openCart(){if(cart.length==0){alert("Cart empty! Add food first");return}let list="",total=0;cart.forEach(c=>{let sub=c.price*c.qty;total+=sub;list+=`${c.name} x${c.qty} = ₦${sub}<br>`});document.getElementById('cartList').innerHTML=list+`<hr><b>Total: ₦${total}</b>`;document.getElementById('checkout').style.display='flex';}
-function closeCart(){document.getElementById('checkout').style.display='none';}
-async function placeOrder(){let name=document.getElementById('cName').value.trim(),phone=document.getElementById('cPhone').value.trim(),loc=document.getElementById('cLoc').value.trim();if(!name||!phone||!loc){alert("Fill Name, Phone and Location");return}let items=cart.map(c=>`${c.name} x${c.qty}`).join(', ');let total=cart.reduce((s,c)=>s+c.price*c.qty,0);document.getElementById('orderBtn').innerText="Placing...";await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"order",customerName:name,phone,location:loc,items,total})});document.getElementById('msg').innerHTML=`✅ Order placed! Mama Gold go call you soon.<br>Total ₦${total}`;cart=[];document.getElementById('count').innerText=0;setTimeout(()=>{closeCart();document.getElementById('orderBtn').innerText="Place Order - Pay on Delivery";document.getElementById('msg').innerHTML="";},3000);}
-load();
+let menu=[], cart=[];
+
+async function loadMenu(){
+  try{
+    let r=await fetch(API); let data=await r.json(); menu=data;
+    let h=""; data.forEach(f=>{
+      let isSold = f.status=="soldout";
+      h+=`<div class="food"><img src="${f.image||'https://via.placeholder.com/200'}"><span class="soldout" style="${isSold?'':'display:none'}">Sold Out</span><div class="info"><h3>${f.name}</h3><p>${f.desc||''}</p><div class="price">₦${f.price}</div><button onclick="addToCart('${f.name}')" ${isSold?'disabled':''}>${isSold?'Sold Out':'Add to Cart'}</button></div></div>`;
+    });
+    document.getElementById('menu').innerHTML=h||"No food today";
+  }catch(e){document.getElementById('menu').innerHTML="Failed to load - Refresh";}
+}
+function addToCart(name){
+  let food=menu.find(f=>f.name==name);
+  let item=cart.find(c=>c.name==name);
+  if(item) item.qty++; else cart.push({name:food.name, price:Number(food.price), qty:1});
+  updateCartUI();
+  document.getElementById('cartBtn').style.transform="scale(1.2)"; setTimeout(()=>document.getElementById('cartBtn').style.transform="scale(1)",200);
+}
+function updateCartUI(){
+  let count=cart.reduce((s,c)=>s+c.qty,0);
+  let total=cart.reduce((s,c)=>s+(c.price*c.qty),0);
+  document.getElementById('cartCount').innerText=count;
+  document.getElementById('cartTotal').innerText=total;
+  document.getElementById('finalTotal').innerText=total;
+  let h=""; cart.forEach((c,i)=>{
+    h+=`<div class="cartItem"><span>${c.name} x${c.qty}<br><small>₦${c.price} each</small></span><span>₦${c.price*c.qty} <button onclick="removeItem(${i})" style="background:red;color:white;border:none;border-radius:5px;padding:2px 6px;margin-left:5px">x</button></span></div>`;
+  });
+  document.getElementById('cartItems').innerHTML=h||"Cart empty";
+}
+function removeItem(i){cart.splice(i,1); updateCartUI();}
+function openCart(){document.getElementById('cartModal').style.display='flex'; updateCartUI();}
+function closeCart(){document.getElementById('cartModal').style.display='none';}
+
+async function submitOrder(){
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const location=document.getElementById('custLocation').value.trim();
+  if(!name||!phone||!location){ alert("Fill name, phone, location"); return; }
+  if(cart.length==0){ alert("Cart empty"); return; }
+
+  let itemsText=cart.map(c=>`${c.name} x${c.qty}`).join(", ");
+  let total=cart.reduce((s,c)=>s+(c.price*c.qty),0);
+  
+  document.getElementById('orderBtn').innerText="⏳ Sending..."; document.getElementById('orderBtn').disabled=true;
+
+  try{
+    let res=await fetch(API,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:"order",customerName:name,phone,location,items:itemsText,total})});
+    let data=await res.json();
+    let orderId=data.orderId||"MG"+Date.now().toString().slice(-6);
+    localStorage.setItem("lastOrderId",orderId);
+    
+    document.getElementById('cartBox').innerHTML=`
+      <div style="text-align:center;padding:25px">
+        <div style="font-size:60px">✅</div>
+        <h2 style="color:#8B4513">Order Received!</h2>
+        <p>Thanks <b>${name}</b></p>
+        <div style="background:#fff8e7;border:2px dashed #8B4513;padding:15px;border-radius:12px;margin:15px 0">
+          <div>Your Order ID</div>
+          <div style="font-size:30px;font-weight:bold;letter-spacing:2px">${orderId}</div>
+          <div>Total: <b>₦${total}</b></div>
+        </div>
+        <p>📍 ${location}<br>📞 ${phone}<br>🍛 ${itemsText}</p>
+        <div style="background:#e8f5e9;padding:10px;border-radius:8px;font-size:13px;text-align:left;margin:10px 0">
+          <b>Track your order:</b><br>🟡 Pending → Mama sees order<br>🔵 Accepted → Cooking<br>🟢 Delivered → Rider coming!
+        </div>
+        <button onclick="location.reload()" style="width:100%;padding:12px;background:#8B4513;color:gold;border:none;border-radius:10px;font-weight:bold;margin-top:10px">Continue Shopping</button>
+        <a href="https://wa.me/2348100000000?text=Hi Mama Gold, my order ${orderId} - ${name}" style="display:block;margin-top:10px;background:#25D366;color:white;padding:12px;border-radius:10px;text-decoration:none;font-weight:bold">💬 Chat on WhatsApp</a>
+      </div>`;
+    cart=[]; 
+  }catch(err){
+    alert("Failed - check internet. "+err);
+    document.getElementById('orderBtn').innerText="Place Order - Pay on Delivery";
+    document.getElementById('orderBtn').disabled=false;
+  }
+}
+
+// Tracker for last order
+let lastId=localStorage.getItem("lastOrderId");
+if(lastId){
+  document.getElementById('tracker').style.display='block';
+  document.getElementById('trackId').innerText=lastId;
+  async function track(){
+    try{
+      let r=await fetch(API+"?action=orders"); let d=await r.json();
+      let my=d.find(o=>o.orderId==lastId);
+      if(my){
+        document.getElementById('trackStatus').innerText=my.status.toUpperCase()+(my.status=="pending"?" 🟡":my.status=="accepted"?" 🔵":" 🟢");
+        if(my.status=="delivered"){
+          let link=document.getElementById('rateLink');
+          link.style.display='inline-block'; link.href=`rate.html?orderId=${lastId}`;
+        }
+      }
+    }catch(e){}
+  }
+  track(); setInterval(track,6000);
+}
+
+loadMenu();
 </script></body></html>
