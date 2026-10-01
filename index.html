@@ -21,8 +21,6 @@ h1 span{color:#14b8a6}
 .btn-primary:hover{background:#2dd4bf;transform:translateY(-2px)}
 .btn-outline{border:1px solid rgba(255,255,255,0.2);color:#e2e8f0}
 .btn-outline:hover{background:rgba(255,255,255,0.05)}
-
-/* PROJECTS */
 .projects{padding:70px 20px;max-width:1100px;margin:0 auto}
 .section-title{text-align:center;font-size:2rem;margin-bottom:10px;font-weight:800}
 .section-sub{text-align:center;color:#94a3b8;margin-bottom:50px}
@@ -33,7 +31,8 @@ h1 span{color:#14b8a6}
 .card p{color:#94a3b8;font-size:0.9rem;margin-bottom:15px}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .tags span{background:#0f172a;color:#14b8a6;padding:4px 10px;border-radius:20px;font-size:0.75rem;border:1px solid rgba(20,184,166,0.2)}
-.card a{color:#14b8a6;font-weight:600;font-size:0.9rem}
+.card-link{color:#14b8a6;font-weight:600;font-size:0.9rem}
+.card-link-soon{color:#64748b;font-weight:600;font-size:0.9rem}
 footer{text-align:center;padding:30px;color:#475569;font-size:0.8rem}
 </style>
 </head>
@@ -41,13 +40,13 @@ footer{text-align:center;padding:30px;color:#475569;font-size:0.8rem}
 
 <section class="hero">
   <div class="hero-card">
-    <div class="profile-ring"><img src="profile.jpg" onerror="this.style.display='none'"></div>
+    <div class="profile-ring"><img src="profile.jpg" onerror="this.style.background='#1e293b'"></div>
     <h1>NA <span>EBENCO</span> BE THIS</h1>
     <div class="tag">WEB DEVELOPER • LAGOS TO THE WORLD</div>
     <p>My name is Ebenco. I just pushed my first code to GitHub. Building clean, fast websites. From Lagos na to the world!</p>
     <div class="btns">
       <a href="https://github.com/Ebenco18" target="_blank" class="btn btn-primary">View My GitHub</a>
-      <a href="https://wa.me/2340000000000" class="btn btn-outline">Contact Me</a>
+      <a href="https://wa.me/2348012345678" target="_blank" class="btn btn-outline">Contact Me</a>
     </div>
   </div>
 </section>
@@ -60,19 +59,19 @@ footer{text-align:center;padding:30px;color:#475569;font-size:0.8rem}
       <h3>🚀 Personal Portfolio</h3>
       <p>My first live portfolio website hosted on GitHub Pages. Dark, fast and responsive.</p>
       <div class="tags"><span>HTML</span><span>CSS</span><span>GitHub Pages</span></div>
-      <a href="#">Live Demo →</a>
+      <a href="https://github.com/Ebenco18/myebenco-portfolio" target="_blank" class="card-link">View Code on GitHub →</a>
     </div>
     <div class="card">
       <h3>🍽️ Buka Website Design</h3>
       <p>Modern landing page for a Lagos restaurant. Clean menu, WhatsApp ordering and location map.</p>
       <div class="tags"><span>HTML</span><span>CSS</span><span>Responsive</span></div>
-      <a href="#">View Design →</a>
+      <span class="card-link-soon">Coming Soon • In Progress</span>
     </div>
     <div class="card">
       <h3>🧮 Smart Calculator</h3>
       <p>A simple, fast calculator built with JavaScript. My first JavaScript project.</p>
       <div class="tags"><span>JavaScript</span><span>Logic</span><span>UI</span></div>
-      <a href="#">View Code →</a>
+      <span class="card-link-soon">Coming Soon • In Progress</span>
     </div>
   </div>
 </section>
