@@ -129,7 +129,6 @@ async function submitOrder(){
   }
 }
 
-// Tracker for last order
 let lastId=localStorage.getItem("lastOrderId");
 if(lastId){
   document.getElementById('tracker').style.display='block';
@@ -149,6 +148,12 @@ if(lastId){
   }
   track(); setInterval(track,6000);
 }
-
 loadMenu();
-</script></body></html>
+</script>
+
+<footer style="text-align:center;padding:30px 10px 20px 10px">
+  <p style="color:#999;font-size:12px">© 2026 Mama Gold Buka - Hot & Fast</p>
+  <a href="mama-gold-orders.html" style="color:#ddd;font-size:10px;text-decoration:none;letter-spacing:1px">Staff Login</a>
+</footer>
+
+</body></html>
