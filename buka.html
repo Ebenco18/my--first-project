@@ -1,79 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mama Gold Buka - Hot Food</title>
-<style>
-body{background:#fff8e7;font-family:Arial;margin:0;padding:12px}
-.header{text-align:center;background:#8B4513;color:gold;padding:20px;border:5px solid gold;border-radius:15px;margin-bottom:15px}
-.header h1{margin:0;font-size:28px}
-.menu{display:grid;gap:15px}
-.card{border:3px solid #8B4513;border-radius:15px;background:white;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.2);position:relative}
-.card.soldout{opacity:0.7;border:3px dashed red}
-.card img{width:100%;height:200px;object-fit:cover}
-.card-body{padding:12px}
-.card-body h3{margin:0;color:#8B4513;font-size:20px}
-.price{color:green;font-weight:bold;font-size:20px;margin:6px 0}
-.desc{color:#555;font-size:14px}
-.badge{padding:7px;text-align:center;font-weight:bold;font-size:14px}
-.badge.sold{background:red;color:white}
-.badge.avail{background:green;color:white}
-.orderBtn{display:block;width:100%;padding:12px;background:#25D366;color:white;text-align:center;text-decoration:none;border-radius:8px;margin-top:10px;font-weight:bold;font-size:16px}
-.orderBtn.disabled{background:gray;pointer-events:none}
-@media(min-width:600px){.menu{grid-template-columns:1fr 1fr}}
-</style>
-</head>
-<body>
-<div class="header">
-<h1>🍛 MAMA GOLD BUKA 🍛</h1>
-<p>🔥 Hot Food - Order on WhatsApp</p>
-<p style="font-size:12px;margin-top:5px">Fresh food everyday - Ibadan</p>
-</div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold Buka - Order Online</title><style>body{font-family:Arial;background:#fff8e7;margin:0;padding:0}header{background:#8B4513;color:gold;padding:15px;text-align:center;position:sticky;top:0;z-index:10}.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:white;border:3px solid #8B4513;border-radius:12px;overflow:hidden;text-align:center}.card img{width:100%;height:110px;object-fit:cover}.card h4{margin:5px 0 0;font-size:14px}.price{color:#8B4513;font-weight:bold}.btn{width:90%;margin:5px;background:#8B4513;color:gold;border:none;padding:8px;border-radius:8px;font-weight:bold}#cartBtn{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;border:none;padding:15px 20px;border-radius:50px;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:20}#checkout{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:30}.box{background:white;width:90%;max-width:400px;border-radius:15px;padding:20px;border:4px solid #8B4513}input,textarea{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:2px solid #ccc;box-sizing:border-box}</style></head><body>
+<header><h2>🍛 MAMA GOLD BUKA</h2><div>Fresh food daily - Order now!</div></header>
+<div id="menu" class="menu">Loading...</div>
+<button id="cartBtn" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button>
 
-<div id="menu" class="menu">Loading foods... 🍲⏳</div>
+<div id="checkout"><div class="box"><h3 style="text-align:center;color:#8B4513">Complete Your Order</h3><div id="cartList" style="max-height:150px;overflow:auto"></div><input id="cName" placeholder="Your Name"><input id="cPhone" placeholder="Phone Number 080..."><textarea id="cLoc" placeholder="Your Location / Full Address - e.g No 12 XYZ Street, Kano"></textarea><input id="cNote" placeholder="Extra note (optional)"><button onclick="placeOrder()" id="orderBtn" style="width:100%;padding:14px;background:#25D366;color:white;border:none;border-radius:10px;font-weight:bold;margin-top:10px">Place Order - Pay on Delivery</button><button onclick="closeCart()" style="width:100%;padding:10px;background:#ccc;border:none;border-radius:10px;margin-top:5px">Cancel</button><div id="msg" style="text-align:center;margin-top:8px"></div></div></div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
-const WHATSAPP_NUMBER = "234XXXXXXXXXX"; // Change to Mama Gold WhatsApp number!
-
-async function load(){
-  try{
-    let res = await fetch(API_URL);
-    let data = await res.json();
-    let html="";
-    data.reverse().forEach(item=>{
-      if(!item.name) return;
-      let isSold = item.status === "soldout";
-      let img = item.image || `https://via.placeholder.com/300x200?text=${encodeURIComponent(item.name)}`;
-      let badge = isSold 
-        ? `<div class="badge sold">❌ SOLD OUT - E Don Finish</div>` 
-        : `<div class="badge avail">✅ AVAILABLE - Order Now</div>`;
-      let btn = isSold
-        ? `<a class="orderBtn disabled">Sold Out</a>`
-        : `<a class="orderBtn" href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Mama%20Gold,%20I%20want%20to%20order%20${encodeURIComponent(item.name)}%20-%20₦${item.price}" target="_blank">Order on WhatsApp 💬</a>`;
-
-      html+=`
-        <div class="card ${isSold?'soldout':''}">
-          <img src="${img}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-          ${badge}
-          <div class="card-body">
-            <h3>${item.name}</h3>
-            <div class="price">₦${item.price}</div>
-            <div class="desc">${item.desc||""}</div>
-            ${btn}
-          </div>
-        </div>`;
-    });
-    if(!html) html="<p style='text-align:center;padding:20px;background:white;border-radius:10px;border:2px solid gold'>No food yet today.<br>Check back later 🍲</p>";
-    document.getElementById('menu').innerHTML=html;
-  }catch(e){
-    document.getElementById('menu').innerHTML=`<p style='text-align:center;color:red'>Error loading menu 😢<br><small>${e}</small><br>Check internet or Apps Script</p>`;
-  }
-}
+const API="https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+let cart=[];
+async function load(){let r=await fetch(API);let data=await r.json();let h="";data.forEach(f=>{if(f.status=="soldout") return;h+=`<div class="card"><img src="${f.image}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'"><h4>${f.name}</h4><div style="font-size:11px">${f.desc}</div><div class="price">₦${f.price}</div><button class="btn" onclick="addCart('${f.name.replace(/'/g,"\\'")}',${f.price})">Add to Cart</button></div>`});document.getElementById('menu').innerHTML=h||"No food available today";}
+function addCart(name,price){let found=cart.find(c=>c.name==name);if(found){found.qty++}else{cart.push({name,price,qty:1})}document.getElementById('count').innerText=cart.reduce((s,c)=>s+c.qty,0);document.getElementById('cartBtn').style.background="#8B4513";setTimeout(()=>document.getElementById('cartBtn').style.background="#25D366",300);}
+function openCart(){if(cart.length==0){alert("Cart empty! Add food first");return}let list="",total=0;cart.forEach(c=>{let sub=c.price*c.qty;total+=sub;list+=`${c.name} x${c.qty} = ₦${sub}<br>`});document.getElementById('cartList').innerHTML=list+`<hr><b>Total: ₦${total}</b>`;document.getElementById('checkout').style.display='flex';}
+function closeCart(){document.getElementById('checkout').style.display='none';}
+async function placeOrder(){let name=document.getElementById('cName').value.trim(),phone=document.getElementById('cPhone').value.trim(),loc=document.getElementById('cLoc').value.trim();if(!name||!phone||!loc){alert("Fill Name, Phone and Location");return}let items=cart.map(c=>`${c.name} x${c.qty}`).join(', ');let total=cart.reduce((s,c)=>s+c.price*c.qty,0);document.getElementById('orderBtn').innerText="Placing...";await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"order",customerName:name,phone,location:loc,items,total})});document.getElementById('msg').innerHTML=`✅ Order placed! Mama Gold go call you soon.<br>Total ₦${total}`;cart=[];document.getElementById('count').innerText=0;setTimeout(()=>{closeCart();document.getElementById('orderBtn').innerText="Place Order - Pay on Delivery";document.getElementById('msg').innerHTML="";},3000);}
 load();
-// Refresh every 30 seconds so sold out go show quick
-setInterval(load, 30000);
-</script>
-</body>
-</html>
+</script></body></html>
