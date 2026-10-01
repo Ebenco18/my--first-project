@@ -1,23 +1,79 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold Buka - Yaba</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Segoe UI;background:#fff8f0;color:#2d1b0e}header{background:#8B0000;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;position:sticky;top:0;z-index:10}.logo{font-weight:900}.logo span{color:#ffcc00}.hero{background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200);background-size:cover;background-position:center;color:#fff;padding:80px 20px;text-align:center}.btn{padding:14px 30px;border-radius:50px;background:#ffcc00;color:#8B0000;font-weight:800;display:inline-block;margin-top:20px;text-decoration:none}.menu{padding:40px 20px;max-width:1100px;margin:0 auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;margin-top:25px}.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.1);border:3px solid #8B0000}.card img{width:100%;height:190px;object-fit:cover}.body{padding:18px}.price{float:right;color:#8B0000;font-weight:900;font-size:1.1rem}.order{display:block;text-align:center;background:#0f172a;color:#fff;padding:12px;border-radius:12px;margin-top:14px;font-weight:700;text-decoration:none}#status{text-align:center;padding:20px;color:#8B0000;font-weight:600}</style></head><body>
-<header><div class="logo">MAMA GOLD <span>BUKA</span></div><a href="https://wa.me/2349134110830" style="color:#ffcc00;text-decoration:none;font-weight:700">Order Now</a></header>
-<section class="hero"><h1>Chop Better Food for Yaba, Lagos</h1><p>Live menu • Updated from Mama Gold phone</p><a href="#menu" class="btn">See Menu Today</a></section>
-<section class="menu" id="menu"><h2 style="text-align:center;color:#8B0000;font-size:2.2rem">Our Menu Today</h2><div id="status">Loading fresh pot... 🍲</div><div class="grid" id="grid"></div></section>
-<footer style="text-align:center;padding:35px;background:#2d1b0e;color:#ffe9c7;margin-top:40px">📍 Yaba, Lagos | Mama Gold Buka | Built by Ebenco | <a href="admin.html" style="color:#ffcc00">Admin</a></footer>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mama Gold Buka - Hot Food</title>
+<style>
+body{background:#fff8e7;font-family:Arial;margin:0;padding:12px}
+.header{text-align:center;background:#8B4513;color:gold;padding:20px;border:5px solid gold;border-radius:15px;margin-bottom:15px}
+.header h1{margin:0;font-size:28px}
+.menu{display:grid;gap:15px}
+.card{border:3px solid #8B4513;border-radius:15px;background:white;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.2);position:relative}
+.card.soldout{opacity:0.7;border:3px dashed red}
+.card img{width:100%;height:200px;object-fit:cover}
+.card-body{padding:12px}
+.card-body h3{margin:0;color:#8B4513;font-size:20px}
+.price{color:green;font-weight:bold;font-size:20px;margin:6px 0}
+.desc{color:#555;font-size:14px}
+.badge{padding:7px;text-align:center;font-weight:bold;font-size:14px}
+.badge.sold{background:red;color:white}
+.badge.avail{background:green;color:white}
+.orderBtn{display:block;width:100%;padding:12px;background:#25D366;color:white;text-align:center;text-decoration:none;border-radius:8px;margin-top:10px;font-weight:bold;font-size:16px}
+.orderBtn.disabled{background:gray;pointer-events:none}
+@media(min-width:600px){.menu{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🍛 MAMA GOLD BUKA 🍛</h1>
+<p>🔥 Hot Food - Order on WhatsApp</p>
+<p style="font-size:12px;margin-top:5px">Fresh food everyday - Ibadan</p>
+</div>
+
+<div id="menu" class="menu">Loading foods... 🍲⏳</div>
+
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcTcY_jbuiZ3ia2gjp_YJUyPEKAcNqcJsoB31Mup7KACQMoBvLdBoaUfryfVeGNOkPKatnD13FA-FZ/pub?gid=0&single=true&output=csv";
-const pics=["https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600","https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600","https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600","https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600"];
-function cleanPrice(p){if(!p)return"₦0";let n=p.toString().replace(/[^0-9]/g,"");return n?"₦"+Number(n).toLocaleString():"₦"+p}
+const API_URL = "https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+const WHATSAPP_NUMBER = "234XXXXXXXXXX"; // Change to Mama Gold WhatsApp number!
+
 async function load(){
- try{
-  const res=await fetch(CSV_URL);const text=await res.text();
-  const rows=text.trim().split('\n').slice(1);
-  const menu=rows.map((r,i)=>{const c=r.split(',');return{name:c[0]?.trim(),price:c[1]?.trim(),desc:c[2]?.trim(),img:c[3]?.trim()||pics[i%pics.length]}}).filter(m=>m.name);
-  document.getElementById('status').style.display='none';
-  const g=document.getElementById('grid');g.innerHTML='';
-  menu.forEach((m,i)=>{
-   g.innerHTML+=`<div class="card"><img src="${m.img}" onerror="this.src='${pics[i%pics.length]}'"><div class="body"><h3>${m.name} <span class="price">${cleanPrice(m.price)}</span></h3><p style="margin:10px 0;color:#8a6d5c;font-size:.92rem">${m.desc||'Freshly cooked'}</p><a class="order" href="https://wa.me/2349134110830?text=${encodeURIComponent('Hello Mama Gold, I want '+m.name+' - '+m.price)}" target="_blank">Order on WhatsApp →</a></div></div>`;
-  });
- }catch(e){document.getElementById('status').innerHTML="Menu dey load... check network, but your food dey ready! 🍛";}
+  try{
+    let res = await fetch(API_URL);
+    let data = await res.json();
+    let html="";
+    data.reverse().forEach(item=>{
+      if(!item.name) return;
+      let isSold = item.status === "soldout";
+      let img = item.image || `https://via.placeholder.com/300x200?text=${encodeURIComponent(item.name)}`;
+      let badge = isSold 
+        ? `<div class="badge sold">❌ SOLD OUT - E Don Finish</div>` 
+        : `<div class="badge avail">✅ AVAILABLE - Order Now</div>`;
+      let btn = isSold
+        ? `<a class="orderBtn disabled">Sold Out</a>`
+        : `<a class="orderBtn" href="https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Mama%20Gold,%20I%20want%20to%20order%20${encodeURIComponent(item.name)}%20-%20₦${item.price}" target="_blank">Order on WhatsApp 💬</a>`;
+
+      html+=`
+        <div class="card ${isSold?'soldout':''}">
+          <img src="${img}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+          ${badge}
+          <div class="card-body">
+            <h3>${item.name}</h3>
+            <div class="price">₦${item.price}</div>
+            <div class="desc">${item.desc||""}</div>
+            ${btn}
+          </div>
+        </div>`;
+    });
+    if(!html) html="<p style='text-align:center;padding:20px;background:white;border-radius:10px;border:2px solid gold'>No food yet today.<br>Check back later 🍲</p>";
+    document.getElementById('menu').innerHTML=html;
+  }catch(e){
+    document.getElementById('menu').innerHTML=`<p style='text-align:center;color:red'>Error loading menu 😢<br><small>${e}</small><br>Check internet or Apps Script</p>`;
+  }
 }
 load();
-</script></body></html>
+// Refresh every 30 seconds so sold out go show quick
+setInterval(load, 30000);
+</script>
+</body>
+</html>
