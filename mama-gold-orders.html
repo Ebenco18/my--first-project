@@ -1,0 +1,55 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold Orders - Pro</title>
+<style>body{font-family:Arial;background:#fff8e7;margin:0;padding:10px}header{background:#8B4513;color:gold;padding:15px;text-align:center;position:sticky;top:0;z-index:10;border-radius:0 0 15px 15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.stat{background:white;padding:10px;border-radius:10px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.order{background:white;padding:12px;margin:12px 0;border-radius:12px;box-shadow:0 3px 8px rgba(0,0,0,0.1)}
+.pending{border-left:8px solid orange}.accepted{border-left:8px solid #007bff}.delivered{border-left:8px solid green}
+.btn{padding:8px 12px;border:none;border-radius:8px;font-weight:bold;margin:3px;cursor:pointer}.accept{background:#007bff;color:white}.deliver{background:#28a745;color:white}
+</style></head><body>
+<header><h2>🍛 MAMA GOLD - ORDER MANAGER</h2><div id="live">🟢 Live - Checking every 8s</div><audio id="bell" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio></header>
+<div class="stats">
+<div class="stat"><div style="font-size:12px">Today Sales</div><b id="todaySales">₦0</b></div>
+<div class="stat"><div style="font-size:12px">Pending</div><b id="pendingCount">0</b></div>
+<div class="stat"><div style="font-size:12px">Avg Rating</div><b id="avgRate">⭐ 0</b></div>
+</div>
+<button id="enable" onclick="enableSound()" style="width:100%;padding:15px;background:gold;border:none;border-radius:10px;font-weight:bold;margin:10px 0">🔔 ENABLE SOUND - Click here!</button>
+<div id="orders">Loading orders...</div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+let lastCount=0,soundEnabled=false;
+function enableSound(){soundEnabled=true;let b=document.getElementById('bell');b.play().then(()=>b.pause());document.getElementById('enable').innerHTML="✅ Sound ON - Keep this page open"; if(Notification) Notification.requestPermission();}
+async function check(){
+  try{
+    let r=await fetch(API+"?action=orders"); let data=await r.json();
+    if(data.length>lastCount && lastCount!=0 && soundEnabled){document.getElementById('bell').play(); setTimeout(()=>{try{document.getElementById('bell').pause()}catch(e){}},3000); if(Notification && Notification.permission=="granted"){new Notification("🔥 NEW ORDER!",{body:"Mama Gold - New order don enter!"})} else {alert("🔥 NEW ORDER ALERT!");}}
+    lastCount=data.length;
+    let todayStr=new Date().toDateString(); let todayOrders=data.filter(o=>{try{return new Date(o.time).toDateString()==todayStr}catch(e){return false}}); let sales=todayOrders.reduce((s,o)=>s+Number(o.total||0),0);
+    document.getElementById('todaySales').innerText="₦"+sales;
+    document.getElementById('pendingCount').innerText=data.filter(o=>o.status=="pending").length;
+    let rated=data.filter(o=>o.rating); let avg=rated.length?(rated.reduce((s,o)=>s+Number(o.rating),0)/rated.length).toFixed(1):0;
+    document.getElementById('avgRate').innerText="⭐ "+avg+" ("+rated.length+")";
+    let h=""; data.forEach(o=>{
+      let cls=o.status||"pending";
+      h+=`<div class="order ${cls}"><b>#${o.orderId} - ${o.name} - ${o.phone}</b><br>📍 ${o.location}<br>🍛 ${o.items}<br>💰 ₦${o.total} - <b>${(o.status||'pending').toUpperCase()}</b> ${o.rating?`⭐ ${o.rating}/5 - "${o.comment}"`:''}<br><small>${o.time?new Date(o.time).toLocaleString():''}</small><br>
+      ${o.status=="pending"?`<button class="btn accept" onclick="updateStatus('${o.orderId}','accepted')">✅ Accept Order</button>`:''}
+      ${o.status=="accepted"?`<button class="btn deliver" onclick="updateStatus('${o.orderId}','delivered')">🚚 Mark Delivered</button>`:''}
+      ${o.status=="delivered"?`<div style="color:green;font-weight:bold">✅ Delivered - Waiting for rating</div><button class="btn" style="background:#25D366;color:white" onclick="sendRating('${o.orderId}','${o.phone}')">📲 Send Rating Link</button>`:''}
+      <br><a href="tel:${o.phone}" style="background:#25D366;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block;margin-top:8px">📞 Call</a>
+      <a href="https://wa.me/${o.phone.replace(/[^0-9]/g,'')}?text=Hi ${o.name}, your Mama Gold order ${o.orderId} is ${o.status}!" style="background:#128C7E;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block;margin-top:8px;margin-left:5px">💬 WhatsApp</a>
+      </div>`;
+    });
+    document.getElementById('orders').innerHTML=h||"No orders yet - New orders go show here";
+  }catch(e){document.getElementById('orders').innerHTML="Error loading - Refresh page. "+e}
+}
+async function updateStatus(orderId,status){
+  await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"updateStatus",orderId,status})});
+  if(status=="delivered"){let rateLink=`https://ebenco18.github.io/myebenco-portfolio/rate.html?orderId=${orderId}`; alert("Delivered! Send this to customer:\n"+rateLink);}
+  setTimeout(check,1000);
+}
+function sendRating(orderId,phone){
+  let link=`https://ebenco18.github.io/myebenco-portfolio/rate.html?orderId=${orderId}`;
+  let msg=`Hi! Thanks for ordering from Mama Gold Buka 🍛%0AYour order ${orderId} don delivered.%0AAbeg rate us ⭐ here: ${link}`;
+  window.open(`https://wa.me/${phone.replace(/[^0-9]/g,'')}?text=${msg}`,'_blank');
+}
+setInterval(check,8000); check();
+</script></body></html>
