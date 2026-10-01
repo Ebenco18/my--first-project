@@ -1,92 +1,45 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mama Gold - Admin</title>
-<style>
-body{background:#fff8e7;font-family:Arial;padding:15px;margin:0}
-.box{max-width:500px;margin:auto;background:white;border:4px solid #8B4513;border-radius:15px;padding:20px}
-h2{text-align:center;color:#8B4513;margin:0}
-label{font-weight:bold;color:#8B4513;margin-top:14px;display:block}
-input,textarea{width:100%;padding:12px;margin-top:5px;border:2px solid #ccc;border-radius:8px;box-sizing:border-box;font-size:16px}
-button{width:100%;padding:15px;background:#8B4513;color:gold;border:none;border-radius:10px;font-size:18px;margin-top:15px;font-weight:bold}
-#preview{width:100%;height:200px;object-fit:cover;border-radius:10px;display:none;margin-top:10px;border:3px solid gold}
-</style>
-</head>
-<body>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold Admin PRO</title>
+<style>body{background:#fff8e7;font-family:Arial;padding:12px}.box{max-width:550px;margin:auto;background:white;border:4px solid #8B4513;border-radius:15px;padding:18px}button{padding:10px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}.mainBtn{width:100%;padding:14px;background:#8B4513;color:gold;font-size:16px;margin-top:10px}.item{border:2px solid #8B4513;border-radius:10px;padding:10px;margin-bottom:10px;background:#fff8e7}.row{display:flex;gap:8px;margin-top:5px}.sold{background:#ffcccc;border:2px dashed red}.avail{background:#d4edda}</style>
+</head><body>
 <div class="box">
-<h2>🍛 MAMA GOLD ADMIN</h2>
-<p style="text-align:center;font-size:13px;color:#666">Add food + picture - No GitHub needed</p>
-
-<label>Food Name *</label>
-<input id="name" placeholder="Jollof & Chicken">
-
-<label>Price (e.g 3500) *</label>
-<input id="price" type="number" placeholder="3500">
-
-<label>Description *</label>
-<textarea id="desc" placeholder="Party jollof with chicken & coleslaw"></textarea>
-
-<label>Food Picture *</label>
-<input type="file" id="file" accept="image/*">
-<img id="preview">
-<input id="imageUrl" readonly placeholder="Image link go auto appear here" style="background:#f0f0f0;margin-top:8px">
-
-<button onclick="saveAll()" id="btn">Upload & Save to Menu</button>
-<div id="msg" style="margin-top:15px;text-align:center"></div>
-<a href="buka.html" style="display:block;text-align:center;margin-top:15px;color:#8B4513">View Menu →</a>
+<h2 style="text-align:center;color:#8B4513">🍛 MAMA GOLD - PRO ADMIN</h2>
+<input id="name" placeholder="Food Name" style="width:100%;padding:10px;margin-top:8px;border-radius:8px;border:2px solid #ccc">
+<input id="price" type="number" placeholder="Price" style="width:100%;padding:10px;margin-top:8px;border-radius:8px;border:2px solid #ccc">
+<input id="desc" placeholder="Desc" style="width:100%;padding:10px;margin-top:8px;border-radius:8px;border:2px solid #ccc">
+<input type="file" id="file" accept="image/*" style="margin-top:8px"><img id="preview" style="width:100%;height:150px;object-fit:cover;display:none;border-radius:10px;margin-top:8px;border:3px solid gold">
+<input id="imageUrl" readonly placeholder="Image link auto" style="width:100%;padding:8px;background:#eee;margin-top:5px;border-radius:8px">
+<button class="mainBtn" onclick="saveAll()" id="btn">Upload & Add Food</button>
+<div id="msg" style="text-align:center;margin-top:8px"></div>
+<div style="margin-top:20px;border-top:3px solid gold;padding-top:10px"><h3>📋 Menu Manager</h3><div id="list">Loading...</div></div>
 </div>
-
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
-const PIN = "1234"; // Change your PIN here
-let pin = prompt("Enter Admin PIN:");
-if(pin!== PIN){
-  document.body.innerHTML="<h2 style='text-align:center;margin-top:100px'>Access Denied ❌<br>Wrong PIN</h2>";
-}
-
-let finalUrl = "";
-document.getElementById('file').addEventListener('change', async (e)=>{
-  let file = e.target.files[0];
-  if(!file) return;
-  let r = new FileReader();
-  r.onload = ev => { document.getElementById('preview').src=ev.target.result; document.getElementById('preview').style.display='block'; }
-  r.readAsDataURL(file);
-  document.getElementById('msg').innerHTML="Uploading image... ⏳";
-  let form = new FormData(); form.append('file', file);
-  try{
-    let res = await fetch('https://0x0.st',{method:'POST',body:form});
-    finalUrl = (await res.text()).trim();
-    document.getElementById('imageUrl').value = finalUrl;
-    document.getElementById('msg').innerHTML="✅ Image ready! Fill other fields and click Save";
-  }catch(err){
-    document.getElementById('msg').innerHTML="❌ Upload fail. Try smaller image or use imgbb.com";
-  }
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+if(prompt("PIN:")!=="1234"){document.body.innerHTML="<h2 style='text-align:center;margin-top:100px'>Denied ❌</h2>"}
+let finalUrl="",editMode=null;
+function compress(f,m=800,q=0.6){return new Promise(r=>{let rd=new FileReader();rd.onload=e=>{let im=new Image();im.onload=()=>{let c=document.createElement('canvas'),ra=Math.min(m/im.width,m/im.height);c.width=im.width*ra;c.height=im.height*ra;c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(b=>r(b),'image/jpeg',q)};im.src=e.target.result};rd.readAsDataURL(f)})}
+document.getElementById('file').addEventListener('change',async e=>{
+ let file=e.target.files[0];if(!file)return;let b=await compress(file);document.getElementById('preview').src=URL.createObjectURL(b);document.getElementById('preview').style.display='block';
+ let fd=new FormData();fd.append('file',b,'food.jpg');let res=await fetch('https://0x0.st',{method:'POST',body:fd});finalUrl=(await res.text()).trim();document.getElementById('imageUrl').value=finalUrl;
 });
-
 async function saveAll(){
-  let name = document.getElementById('name').value.trim();
-  let price = document.getElementById('price').value.trim();
-  let desc = document.getElementById('desc').value.trim();
-  let image = document.getElementById('imageUrl').value.trim() || finalUrl;
-  if(!name||!price||!desc||!image){ alert("Fill all fields and upload image first!"); return; }
-  document.getElementById('btn').innerText="Saving to Sheet...";
-  document.getElementById('msg').innerHTML="Saving... ⏳";
-  try{
-    await fetch(SCRIPT_URL, {
-      method:'POST',
-      mode:'no-cors',
-      body: JSON.stringify({name:name, price:price, desc:desc, image:image})
-    });
-    document.getElementById('msg').innerHTML=`<div style="background:#d4edda;padding:15px;border-radius:10px"><b>✅ Saved!</b><br>${name} don enter menu!<br><br><a href="buka.html" style="background:#8B4513;color:white;padding:10px 15px;border-radius:5px;text-decoration:none">View Menu</a></div>`;
-    document.getElementById('name').value="";document.getElementById('price').value="";document.getElementById('desc').value="";
-    document.getElementById('imageUrl').value="";finalUrl="";document.getElementById('preview').style.display='none';
-  }catch(e){
-    document.getElementById('msg').innerHTML="❌ Error: "+e+"<br>Check Apps Script deployment";
-  }
-  document.getElementById('btn').innerText="Upload & Save to Menu";
+ let n=document.getElementById('name').value.trim(),p=document.getElementById('price').value.trim(),d=document.getElementById('desc').value.trim(),im=document.getElementById('imageUrl').value||finalUrl;
+ if(!n||!p||!d){alert("Fill fields");return;}
+ let payload=editMode?{action:"edit",oldName:editMode,name:n,price:p,desc:d,image:im}:{name:n,price:p,desc:d,image:im};
+ await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});document.getElementById('msg').innerHTML="✅ Saved!";editMode=null;document.getElementById('btn').innerText="Upload & Add Food";loadList();
 }
-</script>
-</body>
-</html>
+async function loadList(){
+ let r=await fetch(SCRIPT_URL);let data=await r.json();let h="";data.forEach(f=>{
+  let isSold=f.status==="soldout";
+  h+=`<div class="item ${isSold?'sold':'avail'}"><b>${f.name}</b> - ₦${f.price} ${isSold?'<span style="color:red"> [SOLD OUT]</span>':''}<br><small>${f.desc}</small><div class="row">
+  <button style="background:${isSold?'green':'orange'};color:white;flex:1" onclick="toggleSold('${f.name.replace(/'/g,"\\'")}','${isSold?'available':'soldout'}')">${isSold?'Mark Available':'Mark Sold Out'}</button>
+  <button style="background:blue;color:white;flex:1" onclick="startEdit('${f.name.replace(/'/g,"\\'")}','${f.price}','${f.desc.replace(/'/g,"\\'")}','${f.image}')">Edit</button>
+  <button style="background:red;color:white" onclick="delFood('${f.name.replace(/'/g,"\\'")}')">X</button>
+  </div></div>`;
+ });document.getElementById('list').innerHTML=h||"No food";
+}
+function startEdit(name,price,desc,image){editMode=name;document.getElementById('name').value=name;document.getElementById('price').value=price;document.getElementById('desc').value=desc;document.getElementById('imageUrl').value=image;finalUrl=image;document.getElementById('btn').innerText="Update "+name;window.scrollTo(0,0);}
+async function toggleSold(name,status){await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"soldout",name,status})});loadList();}
+async function delFood(name){if(!confirm("Delete "+name+"?"))return;await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"delete",name})});loadList();}
+loadList();
+</script></body></html>
