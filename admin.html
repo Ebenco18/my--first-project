@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mama Gold - Admin</title><style>body{font-family:Segoe UI;background:#fff8f0;padding:20px}input,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc}button{padding:14px;width:100%;border-radius:10px;border:0;background:#8B0000;color:#fff;font-weight:800;margin-top:10px}.card{background:#fff;padding:15px;border-radius:12px;margin-top:15px;display:flex;gap:10px;align-items:center}.card img{width:60px;height:60px;border-radius:8px;object-fit:cover}</style></head><body>
+<h2 style="color:#8B0000">Mama Gold - Add New Food</h2><p>Only you fit see this page. Add food here, e go show for menu.</p>
+<input id="name" placeholder="Food name e.g Egusi & Pounded Yam">
+<input id="price" placeholder="Price e.g ₦3,000">
+<input id="img" placeholder="Paste image link OR leave empty for default">
+<textarea id="desc" placeholder="Description e.g With assorted meat"></textarea>
+<button onclick="add()">Add to Menu ✅</button>
+<button onclick="reset()" style="background:#333">Reset to Default Menu</button>
+<div id="list"></div>
+<script>
+let menu=JSON.parse(localStorage.getItem('mamaGoldMenu')||'null')||[
+{name:"Jollof & Chicken",price:"₦3,500",desc:"Party Jollof + chicken lap + plantain",img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500",wa:"I want Jollof Chicken N3500"},
+{name:"Amala + Ewedu",price:"₦2,800",desc:"Ibadan style with assorted meat",img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500",wa:"I want Amala Ewedu N2800"},
+{name:"Suya + Drink",price:"₦4,000",desc:"Spicy Ram Suya + Coke",img:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500",wa:"I want Suya Combo N4000"}
+];
+function save(){localStorage.setItem('mamaGoldMenu',JSON.stringify(menu));render()}
+function render(){document.getElementById('list').innerHTML='<h3>Current Menu:</h3>'+menu.map((m,i)=>`<div class="card"><img src="${m.img}"><div><b>${m.name}</b><br>${m.price}<br><small>${m.desc}</small></div><button onclick="del(${i})" style="width:auto;background:#ff4444;padding:8px 12px">X</button></div>`).join('')}
+function add(){const n=name.value,p=price.value,d=desc.value,i=img.value||"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500";if(!n||!p)return alert("Put name and price");menu.push({name:n,price:p,desc:d||"Freshly cooked",img:i,wa:`I want ${n} - ${p}`});save();name.value=price.value=desc.value=img.value="";alert("Added! Go check buka.html")}
+function del(i){menu.splice(i,1);save()}
+function reset(){if(confirm("Reset menu?")){localStorage.removeItem('mamaGoldMenu');location.reload()}}
+render();
+</script>
+<p style="margin-top:30px"><a href="buka.html">← Back to Menu</a></p></body></html>
