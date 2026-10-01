@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rate Mama Gold</title>
+<style>body{font-family:Arial;background:#fff8e7;text-align:center;padding:20px}.box{background:white;padding:20px;border-radius:15px;max-width:400px;margin:auto;border:3px solid #8B4513}.star{font-size:40px;cursor:pointer;color:#ccc}.star.active{color:gold}textarea{width:100%;padding:10px;border-radius:8px;border:2px solid #ccc;margin-top:10px}</style></head><body>
+<div class="box"><h2>⭐ Rate Mama Gold Buka</h2><p>Order <span id="oid"></span><br>How was your food?</p>
+<div id="stars"><span class="star" onclick="setRate(1)">★</span><span class="star" onclick="setRate(2)">★</span><span class="star" onclick="setRate(3)">★</span><span class="star" onclick="setRate(4)">★</span><span class="star" onclick="setRate(5)">★</span></div>
+<textarea id="comment" placeholder="Tell us how the food was..."></textarea><br><br>
+<button onclick="submitRate()" style="width:100%;padding:14px;background:#8B4513;color:gold;border:none;border-radius:10px;font-weight:bold">Submit Rating</button><div id="msg" style="margin-top:10px"></div></div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+let rating=0, orderId=new URLSearchParams(location.search).get("orderId");
+document.getElementById('oid').innerText=orderId||"";
+function setRate(n){rating=n; document.querySelectorAll('.star').forEach((s,i)=>{s.classList.toggle('active', i<n)});}
+async function submitRate(){if(!rating){alert("Please select stars");return} document.getElementById('msg').innerText="Submitting..."; await fetch(API,{method:'POST',mode:'no-cors',body:JSON.stringify({action:"rate",orderId,rating,comment:document.getElementById('comment').value})}); document.getElementById('msg').innerHTML="✅ Thank you! Your rating ⭐"+rating+" saved!<br>Mama Gold appreciates you ❤️"; }
+</script></body></html>
