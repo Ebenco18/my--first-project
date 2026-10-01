@@ -1,34 +1,92 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mama Gold Admin - Fixed</title>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mama Gold - Admin</title>
 <style>
-body{font-family:Segoe UI;background:#fff8f0;padding:18px;max-width:600px;margin:0 auto}
-h1{color:#8B0000;text-align:center;font-weight:900}
-.box{background:#fff;padding:20px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.1);margin-top:18px;border:3px solid #8B0000}
-.btn{display:block;text-align:center;background:#16a34a;color:#fff;padding:16px;border-radius:12px;margin-top:12px;text-decoration:none;font-weight:800;font-size:1.05rem}
-.btn2{background:#8B0000}
-.link{word-break:break-all;background:#f5f5f5;padding:10px;border-radius:8px;font-size:.8rem;margin-top:10px}
-</style></head><body>
-
-<h1>MAMA GOLD ADMIN ✅</h1>
-
+body{background:#fff8e7;font-family:Arial;padding:15px;margin:0}
+.box{max-width:500px;margin:auto;background:white;border:4px solid #8B4513;border-radius:15px;padding:20px}
+h2{text-align:center;color:#8B4513;margin:0}
+label{font-weight:bold;color:#8B4513;margin-top:14px;display:block}
+input,textarea{width:100%;padding:12px;margin-top:5px;border:2px solid #ccc;border-radius:8px;box-sizing:border-box;font-size:16px}
+button{width:100%;padding:15px;background:#8B4513;color:gold;border:none;border-radius:10px;font-size:18px;margin-top:15px;font-weight:bold}
+#preview{width:100%;height:200px;object-fit:cover;border-radius:10px;display:none;margin-top:10px;border:3px solid gold}
+</style>
+</head>
+<body>
 <div class="box">
-<h3>📝 Edit Your Menu (Price)</h3>
-<p>Click below to open your Google Sheet. Change price, save, website go update!</p>
-<a class="btn" href="https://docs.google.com/spreadsheets/d/1TNUitaIObY4JF5rHJcXN3IdpHID_qWBKs1QJlCwV2m8/edit?gid=0#gid=0" target="_blank">📝 OPEN SHEET TO EDIT MENU</a>
-<div class="link">Edit Link: https://docs.google.com/spreadsheets/d/1TNUitaIObY4JF5rHJcXN3IdpHID_qWBKs1QJlCwV2m8/edit</div>
+<h2>🍛 MAMA GOLD ADMIN</h2>
+<p style="text-align:center;font-size:13px;color:#666">Add food + picture - No GitHub needed</p>
+
+<label>Food Name *</label>
+<input id="name" placeholder="Jollof & Chicken">
+
+<label>Price (e.g 3500) *</label>
+<input id="price" type="number" placeholder="3500">
+
+<label>Description *</label>
+<textarea id="desc" placeholder="Party jollof with chicken & coleslaw"></textarea>
+
+<label>Food Picture *</label>
+<input type="file" id="file" accept="image/*">
+<img id="preview">
+<input id="imageUrl" readonly placeholder="Image link go auto appear here" style="background:#f0f0f0;margin-top:8px">
+
+<button onclick="saveAll()" id="btn">Upload & Save to Menu</button>
+<div id="msg" style="margin-top:15px;text-align:center"></div>
+<a href="buka.html" style="display:block;text-align:center;margin-top:15px;color:#8B4513">View Menu →</a>
 </div>
 
-<div class="box">
-<h3>🌍 Your Live Websites</h3>
-<a class="btn btn2" href="https://ebenco18.github.io/myebenco-portfolio/buka.html" target="_blank">🍛 SEE MAMA GOLD BUKA - LIVE MENU</a>
-<a class="btn" style="background:#ffcc00;color:#8B0000" href="buka.html" target="_blank">Open Buka (local)</a>
-</div>
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmvMIC2QPoGEp-zDC_ksVFMkb0eFhZTid2vzaOoCRX3pkbmzUWS4C5daoMYkARwPMM/exec";
+const PIN = "1234"; // Change your PIN here
+let pin = prompt("Enter Admin PIN:");
+if(pin!== PIN){
+  document.body.innerHTML="<h2 style='text-align:center;margin-top:100px'>Access Denied ❌<br>Wrong PIN</h2>";
+}
 
-<div class="box">
-<h3>🔗 Website is reading from (Publish Link)</h3>
-<div class="link">https://docs.google.com/spreadsheets/d/e/2PACX-1vRcTcY_jbuiZ3ia2gjp_YJUyPEKAcNqcJsoB31Mup7KACQMoBvLdBoaUfryfVeGNOkPKatnD13FA-FZ/pub?gid=0&single=true&output=csv</div>
-<p style="margin-top:10px;font-size:.9rem">This publish link makes buka.html show your sheet price with border ₦3,500 etc.</p>
-</div>
+let finalUrl = "";
+document.getElementById('file').addEventListener('change', async (e)=>{
+  let file = e.target.files[0];
+  if(!file) return;
+  let r = new FileReader();
+  r.onload = ev => { document.getElementById('preview').src=ev.target.result; document.getElementById('preview').style.display='block'; }
+  r.readAsDataURL(file);
+  document.getElementById('msg').innerHTML="Uploading image... ⏳";
+  let form = new FormData(); form.append('file', file);
+  try{
+    let res = await fetch('https://0x0.st',{method:'POST',body:form});
+    finalUrl = (await res.text()).trim();
+    document.getElementById('imageUrl').value = finalUrl;
+    document.getElementById('msg').innerHTML="✅ Image ready! Fill other fields and click Save";
+  }catch(err){
+    document.getElementById('msg').innerHTML="❌ Upload fail. Try smaller image or use imgbb.com";
+  }
+});
 
-</body></html>
+async function saveAll(){
+  let name = document.getElementById('name').value.trim();
+  let price = document.getElementById('price').value.trim();
+  let desc = document.getElementById('desc').value.trim();
+  let image = document.getElementById('imageUrl').value.trim() || finalUrl;
+  if(!name||!price||!desc||!image){ alert("Fill all fields and upload image first!"); return; }
+  document.getElementById('btn').innerText="Saving to Sheet...";
+  document.getElementById('msg').innerHTML="Saving... ⏳";
+  try{
+    await fetch(SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      body: JSON.stringify({name:name, price:price, desc:desc, image:image})
+    });
+    document.getElementById('msg').innerHTML=`<div style="background:#d4edda;padding:15px;border-radius:10px"><b>✅ Saved!</b><br>${name} don enter menu!<br><br><a href="buka.html" style="background:#8B4513;color:white;padding:10px 15px;border-radius:5px;text-decoration:none">View Menu</a></div>`;
+    document.getElementById('name').value="";document.getElementById('price').value="";document.getElementById('desc').value="";
+    document.getElementById('imageUrl').value="";finalUrl="";document.getElementById('preview').style.display='none';
+  }catch(e){
+    document.getElementById('msg').innerHTML="❌ Error: "+e+"<br>Check Apps Script deployment";
+  }
+  document.getElementById('btn').innerText="Upload & Save to Menu";
+}
+</script>
+</body>
+</html>
