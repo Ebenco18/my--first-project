@@ -1,46 +1,11 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - Mama Gold</title><style>body{font-family:Segoe UI;background:#fff8f0;padding:20px;max-width:600px;margin:0 auto}h1{color:#8B0000;text-align:center}.box{background:#fff;padding:20px;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin-top:20px;border:2px solid #8B0000}input{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #ccc}a.btn{display:block;text-align:center;background:#8B0000;color:#fff;padding:14px;border-radius:12px;margin-top:15px;text-decoration:none;font-weight:700}.green{background:#16a34a}.link{word-break:break-all;background:#f5f5f5;padding:10px;border-radius:8px;font-size:.85rem}</style></head><body>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - Mama Gold</title><style>body{font-family:Segoe UI;background:#fff8f0;padding:20px;max-width:600px;margin:0 auto}h1{color:#8B0000;text-align:center}.box{background:#fff;padding:22px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.1);margin-top:20px;border:3px solid #8B0000}input{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #ccc}a.btn{display:block;text-align:center;background:#8B0000;color:#fff;padding:14px;border-radius:12px;margin-top:15px;text-decoration:none;font-weight:700}.green{background:#16a34a}.link{word-break:break-all;background:#f5f5f5;padding:10px;border-radius:8px;font-size:.85rem}</style></head><body>
 <h1>MAMA GOLD ADMIN</h1>
 <div class="box">
-<h3>🔐 Login</h3>
-<input id="user" placeholder="Username: admin">
-<input id="pass" type="password" placeholder="Password: mama123">
-<button onclick="login()" style="width:100%;padding:12px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:10px">Login</button>
+<h3>🔐 Login (admin / mama123)</h3>
+<input id="user" placeholder="Username"><input id="pass" type="password" placeholder="Password">
+<button onclick="login()" style="width:100%;padding:12px;background:#0f172a;color:#fff;border:none;border-radius:10px;font-weight:700">Login</button>
 <p id="msg" style="color:red;text-align:center;margin-top:10px"></p>
 </div>
-
 <div id="panel" style="display:none">
-<div class="box">
-<h3>✅ Your Live Menu Sheet</h3>
-<p>Click to edit price anytime - website go update auto!</p>
-<a class="btn green" href="https://docs.google.com/spreadsheets/d/1TNUitalObY4JF5rHJcXN3IdpHID_qWBK0nZ7eBw/edit" target="_blank">📝 Open Google Sheet to Edit Menu</a>
-<div style="margin-top:15px">
-<p><b>Your CSV Link (for website):</b></p>
-<div class="link">https://docs.google.com/spreadsheets/d/e/2PACX-1vRcTcY_jbuiZ3ia2gjp_YJUyPEKAcNqcJsoB31Mup7KACQMoBvLdBoaUfryfVeGNOkPKatnD13FA-FZ/pub?gid=0&single=true&output=csv</div>
-</div>
-</div>
-
-<div class="box">
-<h3>🌍 Your Websites</h3>
-<a class="btn" href="buka.html" target="_blank">See Mama Gold Buka (Live Menu)</a>
-<a class="btn" style="background:#ffcc00;color:#8B0000;margin-top:10px" href="https://ebenco18.github.io/myebenco-portfolio/buka.html" target="_blank">Open Public Link</a>
-</div>
-
-<div class="box">
-<h3>📖 How to update price:</h3>
-<p>1. Click green button to open sheet<br>2. Change price for Jollof etc<br>3. Save (auto)<br>4. Go to buka.html refresh - new price go show! No need to edit code again!</p>
-</div>
-</div>
-
-<script>
-function login(){
- const u=document.getElementById('user').value;
- const p=document.getElementById('pass').value;
- if(u==='admin' && p==='mama123'){
-  document.getElementById('panel').style.display='block';
-  document.getElementById('msg').innerText='';
- }else{
-  document.getElementById('msg').innerText='Wrong! Use admin / mama123';
- }
-}
-</script>
-</body></html>
+<div class="box"><h3>✅ Edit Menu Live</h3><p>Change price for Jollof, Amala, Suya. Website updates automatically!</p>
+<a class="btn green" href="https://docs.google.com/spreadsheets/d/1TNUitaIObY4JF5rHJcXN3IdpHID_qWBKs1QJlCwV2m8/edit?gid=0#gid=0" target="_blank">📝 OPEN SHEET TO EDIT (Laptop Link
